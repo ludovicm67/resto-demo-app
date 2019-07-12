@@ -11,7 +11,7 @@ build:
 deploy:
   kubectl:
     manifests:
-    - k8s/namespace.yaml
+    # - k8s/namespace.yaml
     - k8s/cert.yaml
     - k8s/redis-dep.yaml
     - k8s/redis-service.yaml
