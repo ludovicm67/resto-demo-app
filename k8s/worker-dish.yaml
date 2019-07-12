@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: resto-demo-app-worker-dish
+  namespace: resto-demo-app
 spec:
   selector:
     matchLabels:

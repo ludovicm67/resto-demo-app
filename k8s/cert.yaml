@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: certs-selfsigned-tls
+  namespace: resto-demo-app
+  annotations:
+    replicator.v1.mittwald.de/replicate-from: certs/certs-selfsigned-tls
+data: {}

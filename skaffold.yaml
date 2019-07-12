@@ -2,6 +2,8 @@ apiVersion: skaffold/v1beta12
 kind: Config
 build:
   artifacts:
+  - image: ludovicm67/resto-demo-app-back
+    context: backend
   - image: ludovicm67/resto-demo-app-room
     context: room
   - image: ludovicm67/resto-demo-app-dish
@@ -9,5 +11,14 @@ build:
 deploy:
   kubectl:
     manifests:
+    - k8s/namespace.yaml
+    - k8s/cert.yaml
+    - k8s/redis-dep.yaml
+    - k8s/redis-service.yaml
+    - k8s/back-dep.yaml
+    - k8s/back-service.yaml
+    - k8s/back-ingress.yaml
     - k8s/room-dep.yaml
+    - k8s/room-service.yaml
+    - k8s/room-ingress.yaml
     - k8s/worker-dish.yaml

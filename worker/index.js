@@ -1,1 +1,3 @@
-console.log(process.env);
+setInterval(() => {
+  console.log(process.env);
+}, 2000);

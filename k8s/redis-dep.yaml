@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resto-demo-app-room
+  name: redis
   namespace: resto-demo-app
 spec:
   selector:
     matchLabels:
-      app: resto-demo-app-room
+      app: redis
   template:
     metadata:
       labels:
-        app: resto-demo-app-room
+        app: redis
     spec:
       containers:
-      - name: resto-demo-app-room
-        image: ludovicm67/resto-demo-app-room
+      - name: redis
+        image: redis:5.0.5-alpine
         resources:
           requests:
             memory: "32Mi"
@@ -23,4 +23,4 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 80
+        - containerPort: 6379
