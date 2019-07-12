@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resto-demo-app-room
+spec:
+  selector:
+    matchLabels:
+      app: resto-demo-app-room
+  template:
+    metadata:
+      labels:
+        app: resto-demo-app-room
+    spec:
+      containers:
+      - name: resto-demo-app-room
+        image: ludovicm67/resto-demo-app-room
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80

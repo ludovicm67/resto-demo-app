@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resto-demo-app-worker-dish
+spec:
+  selector:
+    matchLabels:
+      app: resto-demo-app-worker-dish
+  template:
+    metadata:
+      labels:
+        app: resto-demo-app-worker-dish
+    spec:
+      containers:
+      - name: resto-demo-app-worker-dish
+        image: ludovicm67/resto-demo-app-dish
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
