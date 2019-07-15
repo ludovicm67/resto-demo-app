@@ -25,7 +25,7 @@ redis_client.on('error', (err) => {
 // setup our metric
 const Gauge = prom.Gauge;
 const g = new Gauge({
-	name: 'queue',
+	name: 'resto_queue',
 	help: 'Queue size for a specific worker',
 	labelNames: ['worker']
 });
