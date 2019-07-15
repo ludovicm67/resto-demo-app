@@ -77,19 +77,18 @@ server.get('/worker/:name', (req, res) => {
   };
 
   if (!validate_worker(worker_name)) {
-    res.status(404);
-    res.end(JSON.stringify({
+    res.status(404).json({
       ...response,
       message: `worker '${worker_name}' not found`,
-    }))
+    });
   }
 
   const queue_lenth = 42;
-  res.end(JSON.stringify({
+  res.json({
     ...response,
     message: `worker ${worker_name} has ${queue_lenth} items in his queue`,
     queue_lenth,
-  }));
+  });
 });
 
 // start the server
