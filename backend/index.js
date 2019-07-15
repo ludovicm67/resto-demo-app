@@ -4,16 +4,12 @@ const prom = require('prom-client');
 const redis = require('redis');
 const server = express();
 const register = prom.register;
+server.use(express.json());
 
 // connect to redis
 const redis_host = process.env.REDIS_HOST || 'localhost';
 const redis_port = process.env.REDIS_PORT || 6379;
 const redis_client = redis.createClient(redis_port, redis_host);
-const redis_close_connection = () => {
- redis_client.quit();
- console.log('connection to redis client closed.');
- process.exit(1);
-};
 redis_client.on('connect', () => {
   console.log('connected to redis.');
 });
@@ -24,11 +20,20 @@ redis_client.on('error', (err) => {
 
 // setup our metric
 const Gauge = prom.Gauge;
-const g = new Gauge({
-	name: 'resto_queue',
-	help: 'Queue size for a specific worker',
-	labelNames: ['worker']
-});
+const gauges = {
+  dish: new Gauge({
+    name: 'resto_queue_dish',
+    help: 'Queue size for the dish worker'
+  }),
+  drink: new Gauge({
+    name: 'resto_queue_drink',
+    help: 'Queue size for the drink worker'
+  }),
+  dessert: new Gauge({
+    name: 'resto_queue_dessert',
+    help: 'Queue size for the dessert worker'
+  }),
+};
 
 // limit worker types
 const allowed_workers = [
@@ -41,21 +46,17 @@ const validate_worker = (worker_name) => {
 };
 
 // some random stuff
-const random_queue_size = () => {
-  return Math.round(Math.random() * 50);
-}
+Object.keys(gauges).map(function(worker_name, _index) {
+  gauges[worker_name].set(0);
+});
 
 setInterval(() => {
-	g.set({ worker: 'dish' }, random_queue_size());
-}, 100);
-
-setInterval(() => {
-	g.set({ worker: 'drink' }, random_queue_size());
-}, 100);
-
-setInterval(() => {
-	g.set({ worker: 'dessert' }, random_queue_size());
-}, 100);
+  allowed_workers.map(worker_name => {
+    redis_client.llen(worker_name, (err, res) => {
+      if (!err) gauges[worker_name].set(res);
+    });
+  });
+}, 1000);
 
 // route for probes
 server.get('/health', (_req, res) => {
@@ -83,11 +84,66 @@ server.get('/worker/:name', (req, res) => {
     });
   }
 
-  const queue_lenth = 42;
+  redis_client.llen(worker_name, (err, reply) => {
+    if (err) {
+      res.status(500).json({
+        ...response,
+        message: `cannot get queue size for worker '${worker_name}'`,
+      });
+    } else {
+      res.json({
+        ...response,
+        message: `worker ${worker_name} has ${reply} items in his queue`,
+        queue_lenth: reply,
+      });
+    }
+  });
+});
+
+// update task for a specific worker
+server.post('/worker/:name', (req, res) => {
+  const worker_name = req.params.name;
+  const response = {
+    worker: worker_name,
+    params: req.params,
+    body: req.body,
+  };
+
+  if (!validate_worker(worker_name)) {
+    res.status(404).json({
+      ...response,
+      message: `worker '${worker_name}' not found`,
+    });
+    return;
+  }
+
+  if (!req.body || !req.body.name) {
+    res.status(400).json({
+      ...response,
+      message: 'Bad query. Please check the documentation.',
+    });
+    return;
+  }
+
+  let count = 1;
+  if (req.body.count && req.body.count > 0) {
+    count = parseInt(req.body.count);
+  }
+
+  for (let i = 0; i < count; i++) {
+    redis_client.rpush([worker_name, req.body.name], (err, _reply) => {
+      if (err) {
+        res.status(500).json({
+          ...response,
+          message: `something went wrong during work#${i} for worker '${worker_name}'`,
+        });
+      }
+    });
+  }
+
   res.json({
     ...response,
-    message: `worker ${worker_name} has ${queue_lenth} items in his queue`,
-    queue_lenth,
+    message: `worker ${worker_name} was updated`,
   });
 });
 
@@ -95,6 +151,3 @@ server.get('/worker/:name', (req, res) => {
 server.listen(3000, () => {
   console.log('server listening on port 3000.');
 });
-
-// close redis connection on exit
-process.on('exit', redis_close_connection);

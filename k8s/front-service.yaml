@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: resto-demo-app-room
+  name: resto-demo-app-front
   namespace: resto-demo-app
 spec:
   type: ClusterIP
   selector:
-    app: resto-demo-app-room
+    app: resto-demo-app-front
   ports:
   - port: 80
     targetPort: 80

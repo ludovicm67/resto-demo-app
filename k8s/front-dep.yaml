@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resto-demo-app-room
+  name: resto-demo-app-front
   namespace: resto-demo-app
 spec:
   selector:
     matchLabels:
-      app: resto-demo-app-room
+      app: resto-demo-app-front
   template:
     metadata:
       labels:
-        app: resto-demo-app-room
+        app: resto-demo-app-front
     spec:
       containers:
-      - name: resto-demo-app-room
-        image: ludovicm67/resto-demo-app-room
+      - name: resto-demo-app-front
+        image: ludovicm67/resto-demo-app-front
         imagePullPolicy: Always
         resources:
           requests:

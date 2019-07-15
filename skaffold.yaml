@@ -4,8 +4,8 @@ build:
   artifacts:
   - image: ludovicm67/resto-demo-app-back
     context: backend
-  - image: ludovicm67/resto-demo-app-room
-    context: room
+  - image: ludovicm67/resto-demo-app-front
+    context: front
   - image: ludovicm67/resto-demo-app-worker
     context: worker
 deploy:
@@ -18,7 +18,8 @@ deploy:
     - k8s/back-dep.yaml
     - k8s/back-service.yaml
     - k8s/back-ingress.yaml
-    - k8s/room-dep.yaml
-    - k8s/room-service.yaml
-    - k8s/room-ingress.yaml
+    - k8s/front-dep.yaml
+    - k8s/front-service.yaml
+    - k8s/front-ingress.yaml
     - k8s/worker-dish.yaml
+    - k8s/worker-dish-hpa.yaml
