@@ -27,5 +27,9 @@ spec:
           value: dish
         - name: WORKER_DURATION
           value: "5"
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
         ports:
         - containerPort: 80
