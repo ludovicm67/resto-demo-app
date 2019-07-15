@@ -30,6 +30,16 @@ const g = new Gauge({
 	labelNames: ['worker']
 });
 
+// limit worker types
+const allowed_workers = [
+  'dish',
+  'drink',
+  'dessert',
+];
+const validate_worker = (worker_name) => {
+  return allowed_workers.includes(worker_name);
+};
+
 // some random stuff
 const random_queue_size = () => {
   return Math.round(Math.random() * 50);
@@ -56,6 +66,30 @@ server.get('/health', (_req, res) => {
 server.get('/metrics', (_req, res) => {
   res.set('Content-Type', register.contentType);
   res.end(register.metrics());
+});
+
+// get informations about a specific worker
+server.get('/worker/:name', (req, res) => {
+  const worker_name = req.params.name;
+  const response = {
+    worker: worker_name,
+    params: req.params,
+  };
+
+  if (!validate_worker(worker_name)) {
+    res.status(404);
+    res.end(JSON.stringify({
+      ...response,
+      message: `worker '${worker_name}' not found`,
+    }))
+  }
+
+  const queue_lenth = 42;
+  res.end(JSON.stringify({
+    ...response,
+    message: `worker ${worker_name} has ${queue_lenth} items in his queue`,
+    queue_lenth,
+  }));
 });
 
 // start the server
