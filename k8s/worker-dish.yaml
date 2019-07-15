@@ -13,8 +13,8 @@ spec:
         app: resto-demo-app-worker-dish
     spec:
       containers:
-      - name: resto-demo-app-worker-dish
-        image: ludovicm67/resto-demo-app-dish
+      - name: resto-demo-app-worker
+        image: ludovicm67/resto-demo-app-worker
         resources:
           requests:
             memory: "32Mi"
@@ -22,5 +22,10 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+        env:
+        - name: WORKER_NAME
+          value: dish
+        - name: WORKER_DURATION
+          value: "5"
         ports:
         - containerPort: 80

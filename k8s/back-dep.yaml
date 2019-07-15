@@ -15,6 +15,7 @@ spec:
       containers:
       - name: resto-demo-app-back
         image: ludovicm67/resto-demo-app-back
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "32Mi"
@@ -22,6 +23,18 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
         env:
         - name: REDIS_HOST
           value: redis

@@ -15,6 +15,7 @@ spec:
       containers:
       - name: redis
         image: redis:5.0.5-alpine
+        imagePullPolicy: Always
         resources:
           requests:
             memory: "32Mi"

@@ -6,7 +6,7 @@ build:
     context: backend
   - image: ludovicm67/resto-demo-app-room
     context: room
-  - image: ludovicm67/resto-demo-app-dish
+  - image: ludovicm67/resto-demo-app-worker
     context: worker
 deploy:
   kubectl:

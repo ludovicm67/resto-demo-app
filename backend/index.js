@@ -12,12 +12,14 @@ const redis_client = redis.createClient(redis_port, redis_host);
 const redis_close_connection = () => {
  redis_client.quit();
  console.log('connection to redis client closed.');
+ process.exit(1);
 };
 redis_client.on('connect', () => {
   console.log('connected to redis.');
 });
 redis_client.on('error', (err) => {
   console.error(`Error: unable to connect to redis (${err}).`);
+  process.exit(1);
 });
 
 // setup our metric
