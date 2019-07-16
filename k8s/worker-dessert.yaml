@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resto-demo-app-worker-dessert
+  namespace: resto-demo-app
+spec:
+  selector:
+    matchLabels:
+      app: resto-demo-app-worker-dessert
+  template:
+    metadata:
+      labels:
+        app: resto-demo-app-worker-dessert
+    spec:
+      containers:
+      - name: resto-demo-app-worker
+        image: ludovicm67/resto-demo-app-worker
+        resources:
+          requests:
+            memory: "30Mi"
+            cpu: "1m"
+          limits:
+            memory: "75Mi"
+            cpu: "30m"
+        env:
+        - name: WORKER_NAME
+          value: dessert
+        - name: WORKER_DURATION
+          value: "5"
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
+        ports:
+        - containerPort: 80
