@@ -23,3 +23,7 @@ deploy:
     - k8s/front-ingress.yaml
     - k8s/worker-dish.yaml
     - k8s/worker-dish-hpa.yaml
+    - k8s/worker-drink.yaml
+    - k8s/worker-drink-hpa.yaml
+    - k8s/worker-dessert.yaml
+    - k8s/worker-dessert-hpa.yaml
