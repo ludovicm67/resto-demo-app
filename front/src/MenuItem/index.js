@@ -1,4 +1,5 @@
 import React from 'react';
+import './style.css';
 
 /**
  * Needs all these properties:
@@ -36,14 +37,19 @@ class MenuItem extends React.Component {
 
   render() {
     return (
-      <li>
+      <li className="menu-item">
         <input
+          className="menu-item-count"
           type="number"
           min="1"
           value={this.state.count}
           onChange={this.handleChange}
         />
-        <button onClick={this.handleClick}>
+        <span>×</span>
+        <button
+          className="menu-item-button"
+          onClick={this.handleClick}
+        >
           { this.props.name }
         </button>
       </li>

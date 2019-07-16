@@ -1,0 +1,27 @@
+.menu-item {
+  width: 80%;
+  border-bottom: 1px dashed #212121;
+  margin: auto;
+  padding: 3px;
+  font-size: 1rem;
+}
+
+.menu-item-count {
+  width: 15%;
+  display: inline-block;
+  border: none;
+  text-align: right;
+  font-size: inherit;
+}
+
+.menu-item-button {
+  border: none;
+  width: 70%;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.menu-item-button:hover {
+  background: #ddd;
+  font-weight: bold;
+}
