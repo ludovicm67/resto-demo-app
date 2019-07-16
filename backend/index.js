@@ -2,9 +2,11 @@
 const express = require('express');
 const prom = require('prom-client');
 const redis = require('redis');
+const cors = require('cors');
 const server = express();
 const register = prom.register;
 server.use(express.json());
+server.use(cors());
 
 // connect to redis
 const redis_host = process.env.REDIS_HOST || 'localhost';
