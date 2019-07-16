@@ -1,4 +1,5 @@
 import React from 'react';
+import config from '../config';
 import './style.css';
 
 /**
@@ -26,7 +27,7 @@ class MenuItem extends React.Component {
   }
 
   handleClick(_event) {
-    fetch(`https://resto-back.192.168.85.40.xip.io/worker/${this.props.queue}`, {
+    fetch(`${config.backend}/worker/${this.props.queue}`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'

@@ -23,6 +23,9 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+        env:
+        - name: BACKEND_URL
+          value: https://resto-back.192.168.85.40.xip.io
         readinessProbe:
           httpGet:
             path: /

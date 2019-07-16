@@ -11,3 +11,16 @@
   padding: 0;
   list-style-type: none;
 }
+
+.menu-section-title {
+  margin-block-end: .5em;
+}
+
+@media screen and (max-width: 500px) {
+  .menu {
+    min-width: auto;
+    width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

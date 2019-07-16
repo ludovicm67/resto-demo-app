@@ -7,7 +7,7 @@ function Menu() {
     <div className="menu">
       <ul>
         <li>
-          <p>Dish</p>
+          <p className="menu-section-title">Dish</p>
           <ul>
             <MenuItem name="Schnitzel" queue="dish"></MenuItem>
             <MenuItem name="Potato Salad" queue="dish"></MenuItem>
@@ -15,7 +15,7 @@ function Menu() {
           </ul>
         </li>
         <li>
-          <p>Drinks</p>
+          <p className="menu-section-title">Drink</p>
           <ul>
             <MenuItem name="Beer" queue="drink"></MenuItem>
             <MenuItem name="Coffee" queue="drink"></MenuItem>
@@ -24,7 +24,7 @@ function Menu() {
           </ul>
         </li>
         <li>
-          <p>Dessert</p>
+          <p className="menu-section-title">Dessert</p>
           <ul>
             <MenuItem name="Ice Cream" queue="dessert"></MenuItem>
             <MenuItem name="Black Forest Cake" queue="dessert"></MenuItem>
@@ -33,7 +33,7 @@ function Menu() {
         </li>
       </ul>
     </div>
-  )
+  );
 }
 
 export default Menu;
