@@ -3,21 +3,6 @@ import MenuItem from '../MenuItem';
 import './style.css';
 
 function Menu() {
-  function test_query(e) {
-    const data = JSON.stringify({
-      name: 'test',
-      count: 2,
-    });
-
-    fetch("https://resto-back.192.168.85.40.xip.io/worker/dish", {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: data,
-    });
-  }
-
   return (
     <div class="menu">
       <h2>Menu</h2>
@@ -25,29 +10,26 @@ function Menu() {
         <li>
           <p>Dish</p>
           <ul>
-            <li>
-              <button onClick={test_query}>
-                test
-              </button>
-            </li>
-            <li><MenuItem name="Schnitzel" queue="dish"></MenuItem></li>
-            <li>C</li>
+            <MenuItem name="Schnitzel" queue="dish"></MenuItem>
+            <MenuItem name="Potato Salad" queue="dish"></MenuItem>
+            <MenuItem name="Bratwurst" queue="dish"></MenuItem>
           </ul>
         </li>
         <li>
           <p>Drinks</p>
           <ul>
-            <li>A</li>
-            <li>B</li>
-            <li>C</li>
+            <MenuItem name="Beer" queue="drink"></MenuItem>
+            <MenuItem name="Coffee" queue="drink"></MenuItem>
+            <MenuItem name="Hot chocolate" queue="drink"></MenuItem>
+            <MenuItem name="Soda" queue="drink"></MenuItem>
           </ul>
         </li>
         <li>
           <p>Dessert</p>
           <ul>
-            <li>A</li>
-            <li>B</li>
-            <li>C</li>
+            <MenuItem name="Ice Cream" queue="dessert"></MenuItem>
+            <MenuItem name="Black Forest Cake" queue="dessert"></MenuItem>
+            <MenuItem name="Fruit" queue="dessert"></MenuItem>
           </ul>
         </li>
       </ul>
