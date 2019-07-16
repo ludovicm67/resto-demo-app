@@ -42,5 +42,7 @@ spec:
           value: "6379"
         - name: DEBUG
           value: express:*
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
         ports:
         - containerPort: 3000

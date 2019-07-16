@@ -3,6 +3,7 @@ const express = require('express');
 const prom = require('prom-client');
 const redis = require('redis');
 const cors = require('cors');
+const fetch = require('node-fetch');
 const server = express();
 const register = prom.register;
 server.use(express.json());
@@ -53,6 +54,7 @@ Object.keys(gauges).map(function(worker_name, _index) {
 });
 
 setInterval(() => {
+  prom.collectDefaultMetrics();
   allowed_workers.map(worker_name => {
     redis_client.llen(worker_name, (err, res) => {
       if (!err) gauges[worker_name].set(res);
@@ -146,6 +148,44 @@ server.post('/worker/:name', (req, res) => {
   res.json({
     ...response,
     message: `worker ${worker_name} was updated`,
+  });
+});
+
+// get global status
+server.get('/status', (request, response) => {
+  const status = {};
+  const promises = [];
+
+  const cluster_url = 'https://k8s-lmr-rancher.kehl.dalim.com/k8s/clusters/c-9skgl';
+  const api_worker_endpoint = '/apis/autoscaling/v2beta2/namespaces/resto-demo-app/horizontalpodautoscalers/resto-demo-app-worker-';
+
+  allowed_workers.map(worker_name => {
+    status[worker_name] = gauges[worker_name].get();
+    status[worker_name].value = status[worker_name].values[0].value;
+
+    promises.push(fetch(
+      `${cluster_url}${api_worker_endpoint}${worker_name}`
+    ).then(res => {
+      return res.json();
+    }).then(res => {
+      // const s = res.status;
+      // // s.worker = s.currentMetrics[0].object.metric.name.replace('resto_queue_', '');
+      // // s.currentValue = s.currentMetrics[0].object.current.value;
+      // // delete s.conditions;
+      // // delete s.currentMetrics;
+      // return s;
+      return res;
+    }));
+  });
+
+  Promise.all(promises).then(res => {
+    // res.map(hpa => {
+    //   if (validate_worker(hpa.worker)) {
+    //     status[hpa.worker].hpa = hpa;
+    //   }
+    // });
+    status.hpa = res;
+    response.json(status);
   });
 });
 
