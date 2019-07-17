@@ -9,21 +9,5 @@ build:
   - image: ludovicm67/resto-demo-app-worker
     context: worker
 deploy:
-  kubectl:
-    manifests:
-    # - k8s/namespace.yaml
-    - k8s/cert.yaml
-    - k8s/redis-dep.yaml
-    - k8s/redis-service.yaml
-    - k8s/back-dep.yaml
-    - k8s/back-service.yaml
-    - k8s/back-ingress.yaml
-    - k8s/front-dep.yaml
-    - k8s/front-service.yaml
-    - k8s/front-ingress.yaml
-    - k8s/worker-dish.yaml
-    - k8s/worker-dish-hpa.yaml
-    - k8s/worker-drink.yaml
-    - k8s/worker-drink-hpa.yaml
-    - k8s/worker-dessert.yaml
-    - k8s/worker-dessert-hpa.yaml
+  kustomize:
+    path: k8s/overlays/vsphere/

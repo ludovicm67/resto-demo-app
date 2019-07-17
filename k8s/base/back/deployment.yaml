@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: resto-demo-app-back
-  namespace: resto-demo-app
 spec:
   selector:
     matchLabels:

@@ -1,16 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resto-demo-app-worker-dish
-  namespace: resto-demo-app
+  name: resto-demo-app-worker-dessert
 spec:
   selector:
     matchLabels:
-      app: resto-demo-app-worker-dish
+      app: resto-demo-app-worker-dessert
   template:
     metadata:
       labels:
-        app: resto-demo-app-worker-dish
+        app: resto-demo-app-worker-dessert
     spec:
       containers:
       - name: resto-demo-app-worker
@@ -21,10 +20,10 @@ spec:
             cpu: "1m"
           limits:
             memory: "75Mi"
-            cpu: "50m"
+            cpu: "30m"
         env:
         - name: WORKER_NAME
-          value: dish
+          value: dessert
         - name: WORKER_DURATION
           value: "5"
         - name: REDIS_HOST

@@ -1,20 +1,19 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: resto-demo-app-worker-dessert
-  namespace: resto-demo-app
+  name: resto-demo-app-worker-dish
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: resto-demo-app-worker-dessert
+    name: resto-demo-app-worker-dish
   minReplicas: 1
-  maxReplicas: 30
+  maxReplicas: 20
   metrics:
   - type: Object
     object:
       metric:
-        name: resto_queue_dessert
+        name: resto_queue_dish
       describedObject:
         apiVersion: v1
         kind: Service

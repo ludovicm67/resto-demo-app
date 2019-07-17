@@ -1,25 +1,24 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: resto-demo-app-front
-  namespace: resto-demo-app
+  name: resto-demo-app-back
   annotations:
     ingress.kubernetes.io/ssl-redirect: "true"
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:80;
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:3000;
       proxy_hide_header l5d-remote-ip;
       proxy_hide_header l5d-server-id;
 spec:
   tls:
   - hosts:
-    - resto.192.168.85.40.xip.io
+    - resto-back.192.168.85.40.xip.io
     secretName: certs-selfsigned-tls
   rules:
-    - host: resto.192.168.85.40.xip.io
+    - host: resto-back.192.168.85.40.xip.io
       http:
         paths:
           - path: /
             backend:
-              serviceName: resto-demo-app-front
-              servicePort: 80
+              serviceName: resto-demo-app-back
+              servicePort: 3000
