@@ -12,3 +12,5 @@ bases:
 
 resources:
 - namespace.yaml
+- role.yaml
+- role-binding.yaml

@@ -1,4 +1,5 @@
 // import all required stuff
+const fs = require('fs');
 const express = require('express');
 const prom = require('prom-client');
 const redis = require('redis');
@@ -8,6 +9,12 @@ const server = express();
 const register = prom.register;
 server.use(express.json());
 server.use(cors());
+
+// we are in a k8s cluster, default service account token is mounted here
+const token = fs.readFileSync(
+  '/var/run/secrets/kubernetes.io/serviceaccount/token',
+  'utf8'
+);
 
 // connect to redis
 const redis_host = process.env.REDIS_HOST || 'localhost';
@@ -156,35 +163,45 @@ server.get('/status', (request, response) => {
   const status = {};
   const promises = [];
 
-  const cluster_url = 'https://k8s-lmr-rancher.kehl.dalim.com/k8s/clusters/c-9skgl';
-  const api_worker_endpoint = '/apis/autoscaling/v2beta2/namespaces/resto-demo-app/horizontalpodautoscalers/resto-demo-app-worker-';
+  const cluster_url = 'https://kubernetes.default.svc';
+  const api_namespace = '/apis/autoscaling/v2beta2/namespaces/resto-demo-app';
+  const api_worker_endpoint = '/horizontalpodautoscalers/resto-demo-app-worker-';
+  const request_options = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  };
 
   allowed_workers.map(worker_name => {
     status[worker_name] = gauges[worker_name].get();
     status[worker_name].value = status[worker_name].values[0].value;
+    delete status[worker_name].aggregator;
+    delete status[worker_name].values;
 
     promises.push(fetch(
-      `${cluster_url}${api_worker_endpoint}${worker_name}`
+      `${cluster_url}${api_namespace}${api_worker_endpoint}${worker_name}`,
+      request_options
     ).then(res => {
       return res.json();
     }).then(res => {
-      // const s = res.status;
-      // // s.worker = s.currentMetrics[0].object.metric.name.replace('resto_queue_', '');
-      // // s.currentValue = s.currentMetrics[0].object.current.value;
-      // // delete s.conditions;
-      // // delete s.currentMetrics;
-      // return s;
-      return res;
+      const s = res.status;
+      s.worker = s.currentMetrics[0].object.metric.name.replace('resto_queue_', '');
+      s.currentValue = parseInt(s.currentMetrics[0].object.current.value);
+      delete s.conditions;
+      delete s.currentMetrics;
+      return s;
+    }).catch(e => {
+      console.error(e);
     }));
   });
 
   Promise.all(promises).then(res => {
-    // res.map(hpa => {
-    //   if (validate_worker(hpa.worker)) {
-    //     status[hpa.worker].hpa = hpa;
-    //   }
-    // });
-    status.hpa = res;
+    res.map(hpa => {
+      if (validate_worker(hpa.worker)) {
+        status[hpa.worker].hpa = hpa;
+        delete status[hpa.worker].hpa.worker;
+      }
+    });
     response.json(status);
   });
 });
