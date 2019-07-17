@@ -3,11 +3,11 @@ kind: Config
 build:
   artifacts:
   - image: ludovicm67/resto-demo-app-back
-    context: backend
+    context: src/backend
   - image: ludovicm67/resto-demo-app-front
-    context: front
+    context: src/front
   - image: ludovicm67/resto-demo-app-worker
-    context: worker
+    context: src/worker
 deploy:
   kustomize:
     path: k8s/overlays/vsphere/
