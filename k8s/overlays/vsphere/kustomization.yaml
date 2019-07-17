@@ -13,3 +13,6 @@ resources:
 - cert-secret.yaml
 - ingress-back.yaml
 - ingress-front.yaml
+
+patchesStrategicMerge:
+- deployment-front.yaml
