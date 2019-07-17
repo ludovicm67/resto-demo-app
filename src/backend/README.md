@@ -5,7 +5,7 @@ The backend is written using [NodeJS](https://nodejs.org/).
 
 ## Routes
 
-The backend use ['express'](https://expressjs.com/) to expose some specials routes.
+The backend use [express](https://expressjs.com/) to expose some specials routes.
 
 ### `GET: /status`
 
@@ -98,7 +98,7 @@ If you want more metrics, it is recommanded to query `GET:/status` instead.
 
 If you want to add tasks in a queue for a specific worker, use this route.
 
-Here an example of requests for the `dish` worker:
+Here an example of request for the `dish` worker:
 
 ### Query
 
@@ -111,8 +111,8 @@ Body:
 
 ```json
 {
-	"name": "Something to eat",
-	"count": 42
+  "name": "Something to eat",
+  "count": 42
 }
 ```
 
