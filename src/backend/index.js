@@ -60,6 +60,7 @@ Object.keys(gauges).map(function(worker_name, _index) {
   gauges[worker_name].set(0);
 });
 
+// update local metrics periodically
 setInterval(() => {
   prom.collectDefaultMetrics();
   allowed_workers.map(worker_name => {
@@ -88,13 +89,16 @@ server.get('/worker/:name', (req, res) => {
     params: req.params,
   };
 
+  // check if worker name is valid
   if (!validate_worker(worker_name)) {
     res.status(404).json({
       ...response,
       message: `worker '${worker_name}' not found`,
     });
+    return;
   }
 
+  // return informations about the worker
   redis_client.llen(worker_name, (err, reply) => {
     if (err) {
       res.status(500).json({
@@ -104,7 +108,7 @@ server.get('/worker/:name', (req, res) => {
     } else {
       res.json({
         ...response,
-        message: `worker ${worker_name} has ${reply} items in his queue`,
+        message: `worker '${worker_name}' has ${reply} items in his queue`,
         queue_lenth: reply,
       });
     }
@@ -120,6 +124,7 @@ server.post('/worker/:name', (req, res) => {
     body: req.body,
   };
 
+  // check if worker name is valid
   if (!validate_worker(worker_name)) {
     res.status(404).json({
       ...response,
@@ -128,6 +133,7 @@ server.post('/worker/:name', (req, res) => {
     return;
   }
 
+  // check if the query contain a name for a task
   if (!req.body || !req.body.name) {
     res.status(400).json({
       ...response,
@@ -136,11 +142,13 @@ server.post('/worker/:name', (req, res) => {
     return;
   }
 
+  // manage cases where we want multiple instances of the task
   let count = 1;
   if (req.body.count && req.body.count > 0) {
     count = parseInt(req.body.count);
   }
 
+  // push tasks to a redis list
   for (let i = 0; i < count; i++) {
     redis_client.rpush([worker_name, req.body.name], (err, _reply) => {
       if (err) {
@@ -148,13 +156,15 @@ server.post('/worker/:name', (req, res) => {
           ...response,
           message: `something went wrong during work#${i} for worker '${worker_name}'`,
         });
+        return;
       }
     });
   }
 
+  // give feedback to user
   res.json({
     ...response,
-    message: `worker ${worker_name} was updated`,
+    message: `worker '${worker_name}' was updated`,
   });
 });
 
@@ -163,6 +173,7 @@ server.get('/status', (request, response) => {
   const status = {};
   const promises = [];
 
+  // fetch setup
   const cluster_url = 'https://kubernetes.default.svc';
   const api_namespace = '/apis/autoscaling/v2beta2/namespaces/resto-demo-app';
   const api_worker_endpoint = '/horizontalpodautoscalers/resto-demo-app-worker-';
@@ -172,12 +183,14 @@ server.get('/status', (request, response) => {
     },
   };
 
+  // fetch informations for each worker
   allowed_workers.map(worker_name => {
     status[worker_name] = gauges[worker_name].get();
     status[worker_name].value = status[worker_name].values[0].value;
     delete status[worker_name].aggregator;
     delete status[worker_name].values;
 
+    // push promises for hpa requests in one array
     promises.push(fetch(
       `${cluster_url}${api_namespace}${api_worker_endpoint}${worker_name}`,
       request_options
@@ -195,6 +208,7 @@ server.get('/status', (request, response) => {
     }));
   });
 
+  // wait that all hpa requests are done
   Promise.all(promises).then(res => {
     res.map(hpa => {
       if (validate_worker(hpa.worker)) {
