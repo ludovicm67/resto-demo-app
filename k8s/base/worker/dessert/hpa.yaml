@@ -20,4 +20,4 @@ spec:
         name: resto-demo-app-back
       target:
         type: Value
-        value: 2
+        value: 3

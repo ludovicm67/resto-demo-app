@@ -25,7 +25,7 @@ spec:
         - name: WORKER_NAME
           value: dish
         - name: WORKER_DURATION
-          value: "5"
+          value: "20"
         - name: REDIS_HOST
           value: redis
         - name: REDIS_PORT
