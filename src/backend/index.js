@@ -20,7 +20,7 @@ const token = fs.readFileSync(
 const redis_host = process.env.REDIS_HOST || 'localhost';
 const redis_port = process.env.REDIS_PORT || 6379;
 const redis_client = redis.createClient(redis_port, redis_host);
-redis_client.on('connect', () => {
+redis_client.on('ready', () => {
   console.log('connected to redis.');
 });
 redis_client.on('error', (err) => {
