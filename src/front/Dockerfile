@@ -1,11 +1,16 @@
+# multi-stage builds
+
+## first part: build the app (need build dependencies)
 FROM node:12.6.0-alpine AS build
 ENV NPM_CONFIG_LOGLEVEL warn
 WORKDIR /app
-COPY package.json package.json
+COPY package.json .
+COPY package-lock.json .
 RUN npm install
 COPY . .
 RUN npm run build
 
+## second part: expose the builded app (only static files)
 FROM nginx:alpine
 EXPOSE 80
 WORKDIR /usr/share/nginx/html

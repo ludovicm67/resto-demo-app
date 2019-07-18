@@ -55,7 +55,7 @@ const validate_worker = (worker_name) => {
   return allowed_workers.includes(worker_name);
 };
 
-// some random stuff
+// initialiaze all gauges to 0
 Object.keys(gauges).map(function(worker_name, _index) {
   gauges[worker_name].set(0);
 });
