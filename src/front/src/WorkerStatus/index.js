@@ -1,6 +1,11 @@
 import React from 'react';
 import './style.css';
 
+/**
+ * Needs all these properties:
+ *  - status: worker status got from /status request to the backend
+ *  - time: manually enter the time interval for the worker
+ */
 class WorkerStatus extends React.Component {
   render() {
     return (
@@ -13,9 +18,9 @@ class WorkerStatus extends React.Component {
         </p>
         <p className="worker-status">
           HPA:
-            min={this.props.min},
-            max={this.props.max},
-            target={this.props.target},
+            min={this.props.status.hpa.minReplicas},
+            max={this.props.status.hpa.maxReplicas},
+            target={this.props.status.hpa.target},
             current={this.props.status.hpa.currentReplicas},
             desired={this.props.status.hpa.desiredReplicas}
         </p>

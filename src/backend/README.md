@@ -24,7 +24,10 @@ Here is an example of response you can have:
       "lastScaleTime": "2019-07-17T09:55:33Z",
       "currentReplicas": 1,
       "desiredReplicas": 4,
-      "currentValue": 17
+      "currentValue": 17,
+      "minReplicas": 1,
+      "maxReplicas": 20,
+      "target": 2
     }
   },
   "drink": {
@@ -35,7 +38,10 @@ Here is an example of response you can have:
     "hpa": {
       "currentReplicas": 1,
       "desiredReplicas": 1,
-      "currentValue": 0
+      "currentValue": 0,
+      "minReplicas": 1,
+      "maxReplicas": 50,
+      "target": 5
     }
   },
   "dessert": {
@@ -46,7 +52,10 @@ Here is an example of response you can have:
     "hpa": {
       "currentReplicas": 1,
       "desiredReplicas": 1,
-      "currentValue": 0
+      "currentValue": 0,
+      "minReplicas": 1,
+      "maxReplicas": 30,
+      "target": 3
     }
   }
 }

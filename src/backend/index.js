@@ -173,7 +173,8 @@ server.get('/status', (request, response) => {
   const status = {};
   const promises = [];
 
-  // fetch setup
+  // get information about the HPA from Kubernetes API
+  // (here the setup of all params for the request)
   const cluster_url = 'https://kubernetes.default.svc';
   const api_namespace = '/apis/autoscaling/v2beta2/namespaces/resto-demo-app';
   const api_worker_endpoint = '/horizontalpodautoscalers/resto-demo-app-worker-';
@@ -200,6 +201,9 @@ server.get('/status', (request, response) => {
       const s = res.status;
       s.worker = s.currentMetrics[0].object.metric.name.replace('resto_queue_', '');
       s.currentValue = parseInt(s.currentMetrics[0].object.current.value);
+      s.minReplicas = res.spec.minReplicas;
+      s.maxReplicas = res.spec.maxReplicas;
+      s.target = parseInt(res.spec.metrics[0].object.target.value);
       delete s.conditions;
       delete s.currentMetrics;
       return s;
