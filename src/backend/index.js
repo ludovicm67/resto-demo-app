@@ -199,11 +199,27 @@ server.get('/status', (request, response) => {
       return res.json();
     }).then(res => {
       const s = res.status;
-      s.worker = s.currentMetrics[0].object.metric.name.replace('resto_queue_', '');
-      s.currentValue = parseInt(s.currentMetrics[0].object.current.value);
+      s.worker = worker_name;
+      s.currentValue = 0;
+      s.target = 0;
       s.minReplicas = res.spec.minReplicas;
       s.maxReplicas = res.spec.maxReplicas;
-      s.target = parseInt(res.spec.metrics[0].object.target.value);
+
+      // HPA values to 0 if we have no access
+      if (!s.currentReplicas) s.currentReplicas = 0;
+      if (!s.desiredReplicas) s.desiredReplicas = 0;
+
+      // use current metrics informations if we can have access to them
+      if (s.currentMetrics && s.currentMetrics.length) {
+        s.worker = s.currentMetrics[0].object.metric.name.replace('resto_queue_', '');
+        s.currentValue = parseInt(s.currentMetrics[0].object.current.value);
+      }
+
+      // use target value if we can have access to it
+      if (res.spec.metrics && res.spec.metrics.length && res.spec.metrics[0].object) {
+        s.target = parseInt(res.spec.metrics[0].object.target.value);
+      }
+
       delete s.conditions;
       delete s.currentMetrics;
       return s;
